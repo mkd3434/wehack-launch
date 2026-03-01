@@ -1179,12 +1179,14 @@
 
     <!-- LAUNCH SIGNUP HANDLER -->
     <script>
+    /* ── PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE ── */
+    var WEBHOOK_URL = '';
+
     function handleLaunchSignup(e) {
         e.preventDefault();
         var email = document.getElementById('signup-email').value;
         if (!email) return false;
 
-        /* Send to webhook (same pattern as scorecard) */
         var payload = {
             source: 'wehack-launch-signup',
             email: email,
@@ -1192,14 +1194,17 @@
             page: 'launch'
         };
 
-        try {
-            navigator.sendBeacon(
-                'https://hook.us2.make.com/placeholder-launch-webhook',
-                new Blob([JSON.stringify(payload)], { type: 'application/json' })
-            );
-        } catch (err) { /* silent */ }
+        /* Send to Google Sheets webhook */
+        if (WEBHOOK_URL) {
+            try {
+                navigator.sendBeacon(
+                    WEBHOOK_URL,
+                    new Blob([JSON.stringify(payload)], { type: 'application/json' })
+                );
+            } catch (err) { /* silent */ }
+        }
 
-        /* Also store locally */
+        /* Also store locally as backup */
         try {
             var signups = JSON.parse(localStorage.getItem('wehack-launch-signups') || '[]');
             signups.push(payload);
