@@ -78,37 +78,47 @@
         /* ============================================================
            EMBED MODE (when loaded inside Wix iframe with ?embed=true)
            ============================================================ */
-        html.embed-mode .nav { display: none !important; }
+        html.embed-mode .nav { display: flex !important; position: sticky; top: 0; left: 0; right: 0; width: 100%; max-width: 100%; overflow: hidden; box-sizing: border-box; }
         html.embed-mode .footer { display: none !important; }
         html.embed-mode .final-contact { display: none !important; }
-        html.embed-mode .hero { padding-top: 60px; }
+        html.embed-mode .hero { padding-top: 20px; }
+        html.embed-mode body { min-height: auto !important; margin: 0 auto !important; width: 100% !important; overflow-x: hidden !important; box-sizing: border-box !important; }
+        html.embed-mode html { margin: 0 !important; padding: 0 !important; width: 100% !important; overflow-x: hidden !important; }
+        html.embed-mode .hero::before { width: 500px; height: 500px; top: -60px; }
+        @media (min-width: 1200px) {
+            html.embed-mode body { padding: 0 11% !important; }
+            html.embed-mode .nav { padding-left: 11% !important; padding-right: 11% !important; }
+        }
 
         /* ============================================================
            NAV
            ============================================================ */
         .nav {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             z-index: 100;
-            padding: 16px 32px;
+            padding: 14px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(15,15,16,0.85);
+            background: rgba(15,15,16,0.88);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid rgba(255,255,255,0.06);
         }
+        .nav-left { display: flex; align-items: center; gap: 48px; }
         .nav-logo {
             font-family: 'JetBrains Mono', monospace;
-            font-weight: 700;
-            font-size: 18px;
-            color: var(--text);
-            letter-spacing: -0.5px;
+            font-weight: 700; font-size: 20px;
+            color: var(--text); letter-spacing: -0.5px;
         }
         .nav-logo span { color: var(--green); }
+        .nav-links { display: flex; gap: 28px; }
+        .nav-links a {
+            color: var(--text-muted); font-size: 14px;
+            text-decoration: none; transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--text); text-decoration: none; }
         .nav-cta {
             display: inline-block;
             padding: 8px 20px;
@@ -120,11 +130,22 @@
             text-decoration: none;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-        .nav-cta:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 20px rgba(196,255,158,0.3);
-            text-decoration: none;
+        .nav-cta:hover { background: var(--green-bright); text-decoration: none; transform: translateY(-1px); }
+        .nav-right { display: flex; align-items: center; gap: 16px; }
+        .nav-hamburger {
+            display: none; background: none; border: none; cursor: pointer;
+            width: 28px; height: 20px; position: relative; padding: 0;
         }
+        .nav-hamburger span {
+            display: block; width: 100%; height: 2px; background: var(--text);
+            position: absolute; left: 0; transition: all 0.3s;
+        }
+        .nav-hamburger span:nth-child(1) { top: 0; }
+        .nav-hamburger span:nth-child(2) { top: 9px; }
+        .nav-hamburger span:nth-child(3) { top: 18px; }
+        .nav-open .nav-hamburger span:nth-child(1) { top: 9px; transform: rotate(45deg); }
+        .nav-open .nav-hamburger span:nth-child(2) { opacity: 0; }
+        .nav-open .nav-hamburger span:nth-child(3) { top: 9px; transform: rotate(-45deg); }
 
         /* ============================================================
            HERO
@@ -806,6 +827,18 @@
            RESPONSIVE
            ============================================================ */
         @media (max-width: 900px) {
+            .nav-hamburger { display: block; }
+            .nav-cta { display: none; }
+            .nav-links {
+                display: none; position: fixed; top: 50px; left: 0; right: 0;
+                background: rgba(15,15,16,0.96); backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                flex-direction: column; padding: 20px 24px; gap: 0;
+                border-bottom: 1px solid rgba(255,255,255,0.08);
+            }
+            .nav-open .nav-links { display: flex; }
+            .nav-links a { padding: 14px 0; font-size: 16px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+            .nav-links a:last-child { border-bottom: none; }
             .scorecard-feature,
             .cred-section { grid-template-columns: 1fr; gap: 32px; }
             .resource-grid { grid-template-columns: repeat(2, 1fr); }
@@ -837,8 +870,21 @@
 
     <!-- NAV -->
     <nav class="nav">
-        <div class="nav-logo">We<span>Hack</span></div>
-        <a href="https://score.wehack.co.nz" class="nav-cta">Free Assessment &rarr;</a>
+        <div class="nav-left">
+            <a href="https://www.wehack.co.nz" class="nav-logo" style="text-decoration:none;">We<span>Hack</span></a>
+            <div class="nav-links">
+                <a href="https://score.wehack.co.nz">Free Assessment</a>
+                <a href="https://tools.wehack.co.nz">Resources</a>
+                <a href="https://www.wehack.co.nz">Main Site</a>
+                <a href="mailto:info@wehack.co.nz">Contact</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <a href="https://score.wehack.co.nz" class="nav-cta">Free Security Check &rarr;</a>
+            <button class="nav-hamburger" aria-label="Menu" onclick="document.querySelector('.nav').classList.toggle('nav-open')">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
     </nav>
 
     <!-- HERO -->
